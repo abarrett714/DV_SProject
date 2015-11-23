@@ -38,28 +38,20 @@ shinyServer(function(input, output) {
   })
   
   # Begin code for Second Tab:
-  
-  df2 <- eventReactive(input$clicks2, {data.frame(fromJSON(getURL(URLencode(gsub("\n", " ", 'skipper.cs.utexas.edu:5001/rest/native/?query=
-                                                                                 "select color, clarity, avg_price, avg(avg_price) 
-                                                                                 OVER (PARTITION BY clarity ) as window_avg_price
-                                                                                 from (select color, clarity, avg(price) avg_price
-                                                                                 from diamonds
-                                                                                 group by color, clarity)
-                                                                                 order by clarity;"
-                                                                                 ')), httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_UTEid', PASS='orcl_UTEid', 
-                                                                                                   MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE)))
-  })
+  dfs <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from STORMEVENTS"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_mew2795', PASS='orcl_mew2795', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE), ))
+  dfs1 <- select(dfs, BEGIN_YEARMONTH, DEATHS_DIRECT, DEATHS_INDIRECT, DAMAGE_PROPERTY, BEGIN_DAY) %>% filter(DEATHS_DIRECT != 0)
+  df2 <- eventReactive(input$clicks2, {dfs1})
   
   output$distPlot2 <- renderPlot(height=1000, width=2000, {
     plot1 <- ggplot() + 
       coord_cartesian() + 
-      scale_x_discrete() +
+      scale_x_continuous() +
       scale_y_continuous() +
-      facet_wrap(~CLARITY, ncol=1) +
-      labs(title='Diamonds Barchart\nAVERAGE_PRICE, WINDOW_AVG_PRICE, ') +
-      labs(x=paste("COLOR"), y=paste("AVG_PRICE")) +
+      facet_wrap(~BEGIN_DAY, ncol = 1) +
+      labs(title='StormEvents Barchart\ndeaths_direct, avg(deaths_direct), ') +
+      labs(x=paste("Begin Day"), y=paste("Deaths Direct")) +
       layer(data=df2(), 
-            mapping=aes(x=COLOR, y=AVG_PRICE), 
+            mapping=aes(x=BEGIN_DAY, y=(DEATHS_DIRECT)), 
             stat="identity", 
             stat_params=list(), 
             geom="bar",
@@ -67,15 +59,15 @@ shinyServer(function(input, output) {
             position=position_identity()
       ) + coord_flip() +
       layer(data=df2(), 
-            mapping=aes(x=COLOR, y=AVG_PRICE, label=round(AVG_PRICE - WINDOW_AVG_PRICE)), 
+            mapping=aes(x=BEGIN_DAY, y=DEATHS_DIRECT, label=(DEATHS_DIRECT)), 
             stat="identity", 
             stat_params=list(), 
             geom="text",
-            geom_params=list(colour="black", hjust=-1), 
+            geom_params=list(colour="black", hjust=0.5), 
             position=position_identity()
       ) +
       layer(data=df2(), 
-            mapping=aes(yintercept = WINDOW_AVG_PRICE), 
+            mapping=aes(yintercept = mean(DEATHS_DIRECT)), 
             geom="hline",
             geom_params=list(colour="red")
       )
