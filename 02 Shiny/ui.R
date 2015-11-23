@@ -3,17 +3,16 @@
 library(shiny)
 
 navbarPage(
-  title = "Elements of Visualization",
+  title = "Storm Event Shiny App",
   tabPanel(title = "Crosstab",
            sidebarPanel(
-             actionButton(inputId = "light", label = "Light"),
-             actionButton(inputId = "dark", label = "Dark"),
-             sliderInput("KPI1", "KPI_Low_Max_value:", 
+             sliderInput("KPI1", "KPI Cutoff:", 
                          min = 1, max = 2600,  value = 80),
              textInput(inputId = "title", 
                        label = "Crosstab Title",
                        value = "Damage KPI by State and Type"),
-             actionButton(inputId = "clicks1",  label = "Reset")
+             actionButton(inputId = "clicks", 
+                          label = "Generate Plot")
            ),
            
            mainPanel(plotOutput("distPlot1")
