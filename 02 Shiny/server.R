@@ -33,7 +33,7 @@ shinyServer(function(input, output) {
             geom_params=list(), 
             position=position_identity()
       )
-    plot
+    observeEvent(input$clicks, { plot})
   }) 
   
   observeEvent(input$clicks, {

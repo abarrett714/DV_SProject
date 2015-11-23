@@ -1,0 +1,18 @@
+{
+    "contents" : "# server.R\nrequire(\"jsonlite\")\nrequire(\"RCurl\")\nrequire(ggplot2)\nrequire(dplyr)\nrequire(shiny)\nrequire(shinydashboard)\nrequire(leaflet)\n\nshinyServer(function(input, output) {\n  \n  KPI_Low_Max_value <- reactive({input$KPI1}) \n  \n  df1 <- eventReactive(input$clicks, {data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query=\"select * from STORMEVENTS\"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_apb766', PASS='orcl_apb766', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE)))  %>% select(., EVENT_TYPE, STATE, DAMAGE_CROPS, DAMAGE_PROPERTY, BEGIN_TIME, END_TIME) %>% mutate(DAMAGE_CROPS = strtoi(DAMAGE_CROPS), DAMAGE_PROPERTY = strtoi(DAMAGE_PROPERTY)) %>% filter(., DAMAGE_CROPS > 1 | DAMAGE_PROPERTY > 1) %>% filter(., DAMAGE_CROPS != \"null\" & DAMAGE_PROPERTY != \"null\") %>% mutate(., DAMAGE_KPI = (as.numeric(DAMAGE_CROPS) + as.numeric(DAMAGE_PROPERTY)) / (as.numeric(END_TIME) - as.numeric(BEGIN_TIME))) %>% filter(DAMAGE_KPI != Inf) %>% arrange(STATE) %>% distinct() %>% group_by(., EVENT_TYPE, STATE) %>% mutate(KPI = cumsum(DAMAGE_KPI)) %>% mutate(MAX = max(KPI)) %>% select(EVENT_TYPE, STATE, MAX) %>% distinct() %>% filter(MAX > KPI_Low_Max_value()) })\n    \n  output$distPlot1 <- renderPlot({             \n    plot <- ggplot() + \n      coord_cartesian() + \n      scale_x_discrete() +\n      scale_y_discrete() +\n      scale_fill_gradient2(low=\"white\", mid = \"red\", high= \"darkred\", midpoint = 7500) +\n      labs(title=input$title) +\n      labs(x=paste(\"Disaster\"), y=paste(\"State\")) +\n      layer(data=df1(), \n            mapping=aes(x=EVENT_TYPE, y=STATE, fill = MAX), \n            stat=\"identity\", \n            stat_params=list(), \n            geom=\"tile\",\n            geom_params=list(), \n            position=position_identity()\n      )\n    \n    plot\n  })\n  observeEvent(input$clicks, {\n    print(as.numeric(input$clicks))\n  })\n})",
+    "created" : 1448248223831.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "87790828",
+    "id" : "450313BB",
+    "lastKnownWriteTime" : 1448293176,
+    "path" : "~/DataVisualization/DV_SProject/TestShiny/server.R",
+    "project_path" : "TestShiny/server.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
