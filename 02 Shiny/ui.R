@@ -33,5 +33,13 @@ navbarPage(
            
            mainPanel(plotOutput("distPlot3")
            )        
+  ),
+  tabPanel(title = "Scatter Plot",
+           sidebarPanel(
+             actionButton(inputId = "clicks4", label = "Click me")
+           ),
+           mainPanel(plotOutput("distPlot4")
+           )
   )
 )
+
