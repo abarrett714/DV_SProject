@@ -26,14 +26,7 @@ navbarPage(
            mainPanel(plotOutput("distPlot2")
            )
   ),
-  tabPanel(title = "Blending 2 Data Sources",
-           sidebarPanel(
-             actionButton(inputId = "clicks3",  label = "Click me")
-           ),
-           
-           mainPanel(plotOutput("distPlot3")
-           )        
-  ),
+
   tabPanel(title = "Scatter Plot",
            sidebarPanel(
              actionButton(inputId = "clicks4", label = "Click me")

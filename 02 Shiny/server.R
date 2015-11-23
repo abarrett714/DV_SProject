@@ -38,9 +38,9 @@ shinyServer(function(input, output) {
   })
   
   # Begin code for Second Tab:
-  dfs <- data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from STORMEVENTS"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_mew2795', PASS='orcl_mew2795', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE), ))
-  dfs1 <- select(dfs, BEGIN_YEARMONTH, DEATHS_DIRECT, DEATHS_INDIRECT, DAMAGE_PROPERTY, BEGIN_DAY) %>% filter(DEATHS_DIRECT != 0)
-  df2 <- eventReactive(input$clicks2, {dfs1})
+  dfs <- eventReactive(input$clicks2, {data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select * from STORMEVENTS"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_mew2795', PASS='orcl_mew2795', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE), )) %>% select(BEGIN_YEARMONTH, DEATHS_DIRECT, DEATHS_INDIRECT, DAMAGE_PROPERTY, BEGIN_DAY) %>% filter(DEATHS_DIRECT != 0)})
+  #dfs1 <- select(dfs, BEGIN_YEARMONTH, DEATHS_DIRECT, DEATHS_INDIRECT, DAMAGE_PROPERTY, BEGIN_DAY) %>% filter(DEATHS_DIRECT != 0)
+  #df2 <- eventReactive(input$clicks2, {dfs1})
   
   output$distPlot2 <- renderPlot(height=1000, width=2000, {
     plot1 <- ggplot() + 
@@ -50,7 +50,7 @@ shinyServer(function(input, output) {
       facet_wrap(~BEGIN_DAY, ncol = 1) +
       labs(title='StormEvents Barchart\ndeaths_direct, avg(deaths_direct), ') +
       labs(x=paste("Begin Day"), y=paste("Deaths Direct")) +
-      layer(data=df2(), 
+      layer(data=dfs(), 
             mapping=aes(x=BEGIN_DAY, y=(DEATHS_DIRECT)), 
             stat="identity", 
             stat_params=list(), 
@@ -58,7 +58,7 @@ shinyServer(function(input, output) {
             geom_params=list(colour="blue"), 
             position=position_identity()
       ) + coord_flip() +
-      layer(data=df2(), 
+      layer(data=dfs(), 
             mapping=aes(x=BEGIN_DAY, y=DEATHS_DIRECT, label=(DEATHS_DIRECT)), 
             stat="identity", 
             stat_params=list(), 
@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
             geom_params=list(colour="black", hjust=0.5), 
             position=position_identity()
       ) +
-      layer(data=df2(), 
+      layer(data=dfs(), 
             mapping=aes(yintercept = mean(DEATHS_DIRECT)), 
             geom="hline",
             geom_params=list(colour="red")
@@ -75,45 +75,6 @@ shinyServer(function(input, output) {
   })
   
   # Begin code for Third Tab:
-  
-  df3 <- eventReactive(input$clicks3, {data.frame(fromJSON(getURL(URLencode(gsub("\n", " ", 'skipper.cs.utexas.edu:5001/rest/native/?query=
-                                                                                 """select region || \\\' \\\' || \\\'Sales\\\' as measure_names, sum(sales) as measure_values from SUPERSTORE_SALES_ORDERS
-                                                                                 where country_region = \\\'United States of America\\\'
-                                                                                 group by region
-                                                                                 union all
-                                                                                 select market || \\\' \\\' || \\\'Coffee_Sales\\\' as measure_names, sum(coffee_sales) as measure_values from COFFEE_CHAIN
-                                                                                 group by market
-                                                                                 order by 1;"""
-                                                                                 ')), httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_UTEid', PASS='orcl_UTEid', 
-                                                                                                   MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE)))
-  })
-  
-  output$distPlot3 <- renderPlot(height=1000, width=2000, {
-    plot3 <- ggplot() + 
-      coord_cartesian() + 
-      scale_x_discrete() +
-      scale_y_continuous() +
-      #facet_wrap(~CLARITY, ncol=1) +
-      labs(title='Blending 2 Data Sources') +
-      labs(x=paste("Region Sales"), y=paste("Sum of Sales")) +
-      layer(data=df3(), 
-            mapping=aes(x=MEASURE_NAMES, y=MEASURE_VALUES), 
-            stat="identity", 
-            stat_params=list(), 
-            geom="bar",
-            geom_params=list(colour="blue"), 
-            position=position_identity()
-      ) + coord_flip() +
-      layer(data=df3(), 
-            mapping=aes(x=MEASURE_NAMES, y=MEASURE_VALUES, label=round(MEASURE_VALUES)), 
-            stat="identity", 
-            stat_params=list(), 
-            geom="text",
-            geom_params=list(colour="black", hjust=-0.5), 
-            position=position_identity()
-      )
-    plot3
-  })
   
   df4 <- eventReactive(input$clicks4, {data.frame(fromJSON(getURL(URLencode('skipper.cs.utexas.edu:5001/rest/native/?query="select EVENT_TYPE, DAMAGE_CROPS, DAMAGE_PROPERTY, END_TIME, BEGIN_TIME from STORMEVENTS where DAMAGE_CROPS is not null and DAMAGE_PROPERTY is not null"'),httpheader=c(DB='jdbc:oracle:thin:@sayonara.microlab.cs.utexas.edu:1521:orcl', USER='C##cs329e_jdg3666', PASS='orcl_jdg3666', MODE='native_mode', MODEL='model', returnDimensions = 'False', returnFor = 'JSON'), verbose = TRUE)))  %>% select(EVENT_TYPE, DAMAGE_CROPS, DAMAGE_PROPERTY, END_TIME, BEGIN_TIME) %>% filter(DAMAGE_PROPERTY > 0, DAMAGE_CROPS > 0) %>% mutate (TOTAL_TIME = (abs(END_TIME - BEGIN_TIME)) / 100) %>% filter(TOTAL_TIME > 0) })
   

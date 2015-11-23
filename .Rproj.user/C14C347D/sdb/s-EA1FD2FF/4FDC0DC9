@@ -1,0 +1,18 @@
+{
+    "contents" : "#ui.R \n\nlibrary(shiny)\n\nnavbarPage(\n  title = \"Storm Event Shiny App\",\n  tabPanel(title = \"Crosstab\",\n           sidebarPanel(\n             sliderInput(\"KPI1\", \"KPI Cutoff:\", \n                         min = 1, max = 2600,  value = 80),\n             textInput(inputId = \"title\", \n                       label = \"Crosstab Title\",\n                       value = \"Damage KPI by State and Type\"),\n             actionButton(inputId = \"clicks\", \n                          label = \"Generate Plot\")\n           ),\n           \n           mainPanel(plotOutput(\"distPlot1\")\n           )\n  ),\n  tabPanel(title = \"Barchart\",\n           sidebarPanel(\n             actionButton(inputId = \"clicks2\",  label = \"Click me\")\n           ),\n           \n           mainPanel(plotOutput(\"distPlot2\")\n           )\n  ),\n\n  tabPanel(title = \"Scatter Plot\",\n           sidebarPanel(\n             actionButton(inputId = \"clicks4\", label = \"Click me\")\n           ),\n           mainPanel(plotOutput(\"distPlot4\")\n           )\n  )\n)\n\n",
+    "created" : 1448319528969.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1336533992",
+    "id" : "4FDC0DC9",
+    "lastKnownWriteTime" : 1448319559,
+    "path" : "~/DataVisualization/DV_SProject/02 Shiny/ui.R",
+    "project_path" : "02 Shiny/ui.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "type" : "r_source"
+}
