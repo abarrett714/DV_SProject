@@ -1,0 +1,13 @@
+---
+title: "SProject Documentation"
+author: "Adam, JD, Malachi"
+date: "November 23, 2015"
+output: html_document
+---
+
+In this project we used data about weather events in the US to create a crosstab, bar chart, and scatterplot.
+
+Crosstab: The Crosstab uses a KPI of total damage over elapsed time to pinpoint where the most destructive events occurred and what type of event they were. The Adjustable Slider filters out data below a certain level to eliminate outlier or low data.
+
+Link to the Shiny App:
+https://adamthemanrhino.shinyapps.io/DV_SProject_Shiny_App
