@@ -1,0 +1,18 @@
+{
+    "contents" : "---\ntitle: \"SProject Documentation\"\nauthor: \"Adam, JD, Malachi\"\ndate: \"November 23, 2015\"\noutput: html_document\n---\n\nIn this project we used data about weather events in the US to create a crosstab, bar chart, and scatterplot.\n\nCrosstab: The Crosstab uses a KPI of total damage over elapsed time to pinpoint where the most destructive events occurred and what type of event they were. The Adjustable Slider filters out data below a certain level to eliminate outlier or low data. The data is updated by clicking the \"Generate Plot\" Button.\n\nLink to the Shiny App:\nhttps://adamthemanrhino.shinyapps.io/DV_SProject_Shiny_App\n",
+    "created" : 1448332686165.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3313050783",
+    "id" : "9F919BCD",
+    "lastKnownWriteTime" : 1448332718,
+    "path" : "~/DataVisualization/DV_SProject/00 Doc/SProject Documentation.Rmd",
+    "project_path" : "00 Doc/SProject Documentation.Rmd",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "type" : "r_markdown"
+}
